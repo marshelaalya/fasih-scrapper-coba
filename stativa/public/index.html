@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>STATIVA — Sistem Monitoring Survei Terintegrasi dan Arsip Statistik BPS</title>
+  <meta name="description" content="STATIVA adalah platform resmi untuk mendokumentasikan, mengarsipkan, memonitor 54+ kegiatan statistik, dan sinkronisasi data scraping FASIH lima tim BPS.">
+  <meta name="keywords" content="STATIVA, BPS, Monitoring Survei, Scraping FASIH, Arsip Statistik, Statistik Sosial, Produksi, Distribusi, NWAS, IPDS">
+  <meta name="author" content="Badan Pusat Statistik">
+  <meta name="robots" content="index, follow">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- CSS Custom Properties & Corporate Pastel Design System -->
+  <style>
+    :root {
+      /* Palette Pastel & Soft Corporate Colors */
+      --color-soft-blue: #9ECAD6;
+      --color-muted-indigo: #748DAE;
+      --color-blush-pink: #F5CBCB;
+      --color-light-rose: #FFEAEA;
+
+      /* Team Color Accents */
+      --team-sosial-bg: #EFF6FF;
+      --team-sosial-border: #BFDBFE;
+      --team-sosial-text: #1D4ED8;
+
+      --team-produksi-bg: #F0FDF4;
+      --team-produksi-border: #BBF7D0;
+      --team-produksi-text: #15803D;
+
+      --team-distribusi-bg: #FFF7ED;
+      --team-distribusi-border: #FED7AA;
+      --team-distribusi-text: #C2410C;
+
+      --team-nwas-bg: #FAF5FF;
+      --team-nwas-border: #E9D5FF;
+      --team-nwas-text: #7E22CE;
+
+      --team-ipds-bg: #F0FDFA;
+      --team-ipds-border: #99F6E4;
+      --team-ipds-text: #0F766E;
+
+      /* High-Contrast WCAG Compliant Text */
+      --color-text-primary: #1E293B;   /* Slate 800 */
+      --color-text-secondary: #475569; /* Slate 600 */
+      --color-text-muted: #64748B;     /* Slate 500 */
+      --color-surface-white: #FFFFFF;
+      --color-surface-subtle: #F8FAFC; /* Slate 50 */
+      --color-border: #E2E8F0;         /* Slate 200 */
+      --color-border-hover: #9ECAD6;
+
+      /* Typography Tokens */
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Layout Tokens */
+      --container-max-w: 1240px;
+      --nav-height: 72px;
+      --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text-primary);
+      background-color: var(--color-surface-subtle);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.25;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      outline: none;
+      background: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container-max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ─── PAGE VIEW ROUTER (Multi-Page SPA) ─── */
+    .page-view {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .page-view.active-page {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── FIXED NAVBAR ─── */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--color-border);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      transition: var(--transition-smooth);
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 4px 20px rgba(116, 141, 174, 0.08);
+      background-color: rgba(255, 255, 255, 0.98);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--color-muted-indigo), var(--color-soft-blue));
+      color: white;
+      font-weight: 800;
+      font-size: 0.875rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-text {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-muted-indigo);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tagline {
+      display: block;
+      font-size: 0.6875rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      position: relative;
+      padding: 0.25rem 0;
+      cursor: pointer;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-muted-indigo);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--color-muted-indigo);
+      transition: var(--transition-smooth);
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      background-color: var(--color-muted-indigo);
+      color: white !important;
+      padding: 0.55rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: 0 2px 8px rgba(116, 141, 174, 0.2);
+    }
+
+    .nav-cta:hover {
+      background-color: #5C7494;
+      transform: translateY(-1px);
+    }
+
+    .hamburger-btn {
+      display: none;
+      font-size: 1.35rem;
+      color: var(--color-text-primary);
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+
+    /* ─── COMMON SECTION STYLING ─── */
+    section {
+      padding: 5.5rem 0;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 3.5rem auto;
+    }
+
+    .section-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--color-light-rose);
+      color: #9E4A4A;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(245, 203, 203, 0.7);
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      color: var(--color-text-primary);
+    }
+
+    .section-subtitle {
+      font-size: 1.0625rem;
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.65rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-primary {
+      background-color: var(--color-muted-indigo);
+      color: white;
+      box-shadow: 0 4px 14px rgba(116, 141, 174, 0.3);
+    }
+
+    .btn-primary:hover {
+      background-color: #5C7494;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: white;
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--color-muted-indigo);
+      background-color: var(--color-light-rose);
+      transform: translateY(-2px);
+    }
+
+    .btn-scraping {
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      color: white;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      padding: 0.75rem 1.4rem;
+      font-size: 0.875rem;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-scraping:hover {
+      background: linear-gradient(135deg, #0369A1, #075985);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+    }
+
+    /* ─── HERO SECTION ─── */
+    .hero-section {
+      padding-top: calc(var(--nav-height) + 4.5rem);
+      padding-bottom: 5rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--color-surface-subtle) 100%);
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--color-light-rose);
+      color: var(--color-muted-indigo);
+      font-weight: 600;
+      font-size: 0.8125rem;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--color-blush-pink);
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-title {
+      font-size: 3.25rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      color: var(--color-text-primary);
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, var(--color-muted-indigo), #4E6582);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 1.1875rem;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ─── ANIMATED STATS ─── */
+    .stats-bar {
+      background-color: white;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      padding: 3rem 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: var(--color-muted-indigo);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .stat-desc {
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ─── LANDING PAGE: SPOILER 5 TIM BERDERET ─── */
+    .landing-spoiler-section {
+      background-color: #FFFFFF;
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .spoiler-5-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .spoiler-card {
+      background-color: var(--color-surface-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 1.5rem 1.25rem;
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .spoiler-card:hover {
+      border-color: var(--color-soft-blue);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(116, 141, 174, 0.08);
+      background-color: white;
+    }
+
+    .spoiler-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: white;
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted-indigo);
+      font-size: 1.15rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .spoiler-card:hover .spoiler-icon {
+      background-color: var(--color-muted-indigo);
+      color: white;
+    }
+
+    .spoiler-badge {
+      font-size: 0.6875rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-muted-indigo);
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+
+    .spoiler-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 0.45rem;
+      line-height: 1.3;
+    }
+
+    .spoiler-desc {
+      font-size: 0.8125rem;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+
+    .spoiler-link {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-muted-indigo);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: auto;
+    }
+
+    .spoiler-card:hover .spoiler-link {
+      color: #4E6582;
+      gap: 0.5rem;
+    }
+
+    /* ─── LEVEL 2: DEDICATED TEAM SELECTION HUB (CLEAN & PURE) ─── */
+    .team-hub-page-header {
+      padding-top: calc(var(--nav-height) + 3.5rem);
+      padding-bottom: 4rem;
+      text-align: center;
+    }
+
+    .hub-teams-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+      margin-top: 2.5rem;
+      margin-bottom: 5rem;
+    }
+
+    .hub-team-card {
+      background-color: white;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 2.25rem 2rem;
+      transition: var(--transition-smooth);
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .hub-team-card:hover {
+      border-color: var(--color-soft-blue);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(116, 141, 174, 0.12);
+    }
+
+    .hub-team-icon-wrapper {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background-color: var(--color-surface-subtle);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted-indigo);
+      font-size: 1.45rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .hub-team-badge {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-muted-indigo);
+      background-color: var(--color-surface-subtle);
+      border: 1px solid var(--color-border);
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+
+    .hub-team-title {
+      font-size: 1.35rem;
+      margin-bottom: 0.65rem;
+      color: var(--color-text-primary);
+    }
+
+    .hub-team-desc {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+
+    .hub-team-action-btn {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--color-muted-indigo);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+
+    .hub-team-card:hover .hub-team-action-btn {
+      color: #4E6582;
+      gap: 0.75rem;
+    }
+
+    /* ─── LEVEL 3: DEDICATED SINGLE TEAM PAGE ─── */
+    .single-team-header {
+      padding-top: calc(var(--nav-height) + 2.5rem);
+      padding-bottom: 2rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--color-surface-subtle) 100%);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .breadcrumb-trail {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .breadcrumb-trail a {
+      color: var(--color-muted-indigo);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .team-profile-container {
+      background-color: var(--color-surface-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 2.25rem;
+      margin-top: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .team-badge-tag {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 0.65rem;
+    }
+
+    .team-profile-title {
+      font-size: 1.75rem;
+      color: var(--color-text-primary);
+      margin-bottom: 0.35rem;
+    }
+
+    .team-profile-mandate {
+      font-size: 0.875rem;
+      color: var(--color-muted-indigo);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .team-details-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .detail-box-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tupoksi-list {
+      list-style: none;
+    }
+
+    .tupoksi-list li {
+      position: relative;
+      padding-left: 1.25rem;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 0.45rem;
+      line-height: 1.5;
+    }
+
+    .tupoksi-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--color-muted-indigo);
+      font-weight: 700;
+    }
+
+    .indicator-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.5rem;
+    }
+
+    .indicator-chip {
+      font-size: 0.75rem;
+      font-weight: 600;
+      background-color: white;
+      border: 1px solid var(--color-border);
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      color: var(--color-text-primary);
+    }
+
+    /* Compact Scannable List of Surveys (High-Density Ledger) */
+    .surveys-ledger-container {
+      background-color: white;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 4rem;
+    }
+
+    .ledger-header-bar {
+      padding: 1.25rem 1.5rem;
+      background-color: var(--color-surface-subtle);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .ledger-search-input {
+      padding: 0.55rem 0.85rem 0.55rem 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      width: 260px;
+      background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%2364748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat 0.65rem center;
+    }
+
+    .ledger-search-input:focus {
+      outline: none;
+      border-color: var(--color-muted-indigo);
+    }
+
+    .survey-list-row {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+
+    .survey-list-row:last-child {
+      border-bottom: none;
+    }
+
+    .survey-list-row:hover {
+      background-color: var(--color-surface-subtle);
+    }
+
+    .survey-row-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .survey-row-code {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-muted-indigo);
+      background-color: var(--color-surface-subtle);
+      border: 1px solid var(--color-border);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+
+    .survey-row-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      display: inline;
+    }
+
+    .survey-row-desc {
+      font-size: 0.8125rem;
+      color: var(--color-text-secondary);
+      margin-top: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 800px;
+    }
+
+    .survey-row-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-shrink: 0;
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+    }
+
+    .survey-row-action {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-muted-indigo);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* ─── LEVEL 4: DEDICATED SURVEY DETAIL WEBPAGE ─── */
+    .survey-detail-page-header {
+      padding-top: calc(var(--nav-height) + 2.5rem);
+      padding-bottom: 2.5rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--color-surface-subtle) 100%);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .survey-detail-container {
+      padding: 3rem 0;
+    }
+
+    .survey-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .detail-card-box {
+      background-color: white;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .detail-section-heading {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .detail-body-text {
+      font-size: 0.9375rem;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-sidebar-box {
+      background-color: white;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      position: sticky;
+      top: calc(var(--nav-height) + 1.5rem);
+    }
+
+    .scraping-box-header {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .scraping-terminal-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .scraping-modal-content {
+      background-color: #0F172A;
+      color: #E2E8F0;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 620px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+    }
+
+    .modal-header-bar {
+      padding: 0.75rem 1rem;
+      background-color: #1E293B;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .terminal-logs {
+      padding: 1.25rem;
+      height: 260px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    /* ─── TIMELINE, ARCHIVE, FAQ, CONTACT, FOOTER ─── */
+    .timeline-section { background-color: var(--color-surface-subtle); }
+    .story-timeline { position: relative; max-width: 860px; margin: 0 auto; padding: 1rem 0; }
+    .story-timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: linear-gradient(180deg, var(--color-soft-blue), var(--color-blush-pink), var(--color-muted-indigo)); transform: translateX(-50%); }
+    .timeline-node { position: relative; margin-bottom: 3.5rem; display: flex; align-items: center; }
+    .timeline-node:last-child { margin-bottom: 0; }
+    .timeline-node:nth-child(odd) { flex-direction: row-reverse; }
+    .timeline-card { width: calc(50% - 2.5rem); background-color: white; border: 1px solid var(--color-border); border-radius: 12px; padding: 2rem; }
+    .timeline-icon-dot { position: absolute; left: 50%; width: 44px; height: 44px; border-radius: 50%; background-color: white; border: 3px solid var(--color-soft-blue); display: flex; align-items: center; justify-content: center; color: var(--color-muted-indigo); font-size: 1rem; transform: translateX(-50%); z-index: 2; }
+    .timeline-step { font-size: 0.75rem; font-weight: 700; color: var(--color-muted-indigo); text-transform: uppercase; margin-bottom: 0.35rem; }
+    .timeline-title { font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--color-text-primary); }
+    .timeline-text { font-size: 0.9375rem; color: var(--color-text-secondary); line-height: 1.6; }
+
+    .archive-section { background-color: white; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; }
+    .feature-box { background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); border-radius: 12px; padding: 2rem; }
+    .feature-icon-wrapper { width: 42px; height: 42px; border-radius: 8px; background-color: var(--color-light-rose); color: var(--color-muted-indigo); display: flex; align-items: center; justify-content: center; font-size: 1.125rem; margin-bottom: 1.25rem; }
+    .feature-title { font-size: 1.125rem; margin-bottom: 0.75rem; }
+    .feature-text { font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.6; }
+
+    .faq-section { background-color: var(--color-surface-subtle); }
+    .faq-wrapper { max-width: 800px; margin: 0 auto; }
+    .faq-item { border: 1px solid var(--color-border); border-radius: 10px; margin-bottom: 1rem; background-color: white; overflow: hidden; }
+    .faq-question-btn { width: 100%; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; text-align: left; font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600; color: var(--color-text-primary); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease-out; padding: 0 1.5rem; }
+    .faq-answer-content { padding-bottom: 1.25rem; font-size: 0.9375rem; color: var(--color-text-secondary); line-height: 1.65; }
+
+    .contact-section { background-color: white; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 3.5rem; }
+    .contact-info-card, .contact-form-card { background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); border-radius: 14px; padding: 2.5rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 0.35rem; }
+    .form-control { width: 100%; padding: 0.75rem 1rem; font-size: 0.9375rem; border: 1px solid var(--color-border); border-radius: 8px; background-color: white; color: var(--color-text-primary); }
+    .form-control:focus { outline: none; border-color: var(--color-muted-indigo); box-shadow: 0 0 0 3px rgba(116, 141, 174, 0.15); }
+
+    .footer { background-color: white; border-top: 1px solid var(--color-border); padding: 2rem 0; font-size: 0.875rem; color: var(--color-text-muted); }
+    .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; }
+    .footer-social-links { display: flex; align-items: center; gap: 1.25rem; }
+    .social-icon-link { color: var(--color-text-muted); font-size: 1.125rem; }
+    .social-icon-link:hover { color: var(--color-muted-indigo); }
+
+    .back-to-top-btn { position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px; border-radius: 50%; background-color: var(--color-muted-indigo); color: white; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: var(--transition-smooth); z-index: 999; }
+    .back-to-top-btn.visible { opacity: 1; visibility: visible; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1180px) {
+      .spoiler-5-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-title { font-size: 2.75rem; }
+      .hub-teams-grid { grid-template-columns: repeat(2, 1fr); }
+      .team-details-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .survey-detail-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      :root { --nav-height: 64px; }
+      section { padding: 4rem 0; }
+      .hero-title { font-size: 2.15rem; }
+      .spoiler-5-grid { grid-template-columns: 1fr; }
+      .hub-teams-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .survey-row-meta { display: none; }
+
+      .nav-menu {
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background-color: white;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem 2rem;
+        gap: 1.25rem;
+        border-bottom: 1px solid var(--color-border);
+        transform: translateY(-150%);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-smooth);
+      }
+
+      .nav-menu.open { transform: translateY(0); opacity: 1; visibility: visible; }
+      .hamburger-btn { display: block; }
+      .nav-cta { width: 100%; text-align: center; }
+
+      .story-timeline::before { left: 24px; }
+      .timeline-node { flex-direction: row !important; }
+      .timeline-card { width: calc(100% - 4rem); margin-left: 4rem; }
+      .timeline-icon-dot { left: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- 1. NAVIGATION BAR                                                       -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <header>
+    <nav class="navbar" id="navbar" aria-label="Main Navigation">
+      <div class="container nav-container">
+        <div class="brand-logo" onclick="navigateToPage('home')">
+          <span class="brand-badge">BPS</span>
+          <div>
+            <span class="brand-text">STATIVA</span>
+            <span class="brand-tagline">Monitoring & Arsip Statistik</span>
+          </div>
+        </div>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a class="nav-link active" onclick="navigateToPage('home')">Beranda</a></li>
+          <li><a class="nav-link" onclick="navigateToPage('team-hub')">Portal Tim BPS</a></li>
+          <li><a class="nav-link" onclick="navigateToPage('home', null, 'alur-kegiatan')">Alur Operasional</a></li>
+          <li><a class="nav-link" onclick="navigateToPage('home', null, 'arsip-digital')">Pusat Arsip</a></li>
+          <li><a class="nav-link" onclick="navigateToPage('home', null, 'faq')">FAQ</a></li>
+          <li><a class="nav-cta" onclick="navigateToPage('home', null, 'kontak')">Hubungi Kami</a></li>
+        </ul>
+
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Buka Menu Navigasi" aria-expanded="false">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 1: LANDING PAGE (Beranda Utama)                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="pageHome" class="page-view active-page">
+      <!-- 1. HERO -->
+      <section class="hero-section" id="beranda">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <i class="fa-solid fa-shield-halved"></i> Standar Resmi Satu Data Indonesia
+            </div>
+
+            <h1 class="hero-title">
+              Sistem Monitoring Survei Terintegrasi & <span>Arsip Statistik</span>
+            </h1>
+
+            <p class="hero-description">
+              Platform korporat resmi Badan Pusat Statistik untuk mendokumentasikan, mengarsipkan, memonitor seluruh kegiatan statistik, dan sinkronisasi data scraping FASIH secara terpadu.
+            </p>
+
+            <div class="hero-actions">
+              <button onclick="navigateToPage('team-hub')" class="btn btn-primary">
+                <i class="fa-solid fa-layer-group"></i> Buka Portal 5 Tim BPS
+              </button>
+              <button onclick="navigateToPage('home', null, 'alur-kegiatan')" class="btn btn-secondary">
+                <i class="fa-solid fa-timeline"></i> Alur Kerja Statistik
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. ANIMATED STATISTICS COUNTER -->
+      <section class="stats-bar" aria-label="Statistik Operasional">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number" data-target="54">0</div>
+              <div class="stat-label">Kegiatan Statistik</div>
+              <div class="stat-desc">Survei, Sensus & Direktori Terdata</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" data-target="5">0</div>
+              <div class="stat-label">Pilar Tim Teknis</div>
+              <div class="stat-desc">Sosial, Produksi, Distribusi, NWAS, IPDS</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" data-target="100" data-suffix="%">0%</div>
+              <div class="stat-label">Kepatuhan Metadata</div>
+              <div class="stat-desc">Standar MS-Keg & MS-Ind</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" data-target="168">0</div>
+              <div class="stat-label">Petugas Terdaftar</div>
+              <div class="stat-desc">Koordinator, PML, & PCL CAPI</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. SPOILER 5 TIM BERDERET DI BERANDA (DENGAN LIHAT SELENGKAPNYA) -->
+      <section class="landing-spoiler-section">
+        <div class="container">
+          <div class="section-header" style="margin-bottom: 2.5rem;">
+            <div class="section-pill">Struktur Organisasi Teknis</div>
+            <h2 class="section-title" style="font-size: 2rem;">Lima Pilar Tim Statistik & TI</h2>
+            <p class="section-subtitle">
+              Ikhtisar pembagian fungsi kerja statistik dan teknologi di BPS Kabupaten Kepulauan Sula.
+            </p>
+          </div>
+
+          <!-- Berderet 5 Kartu Spoiler -->
+          <div class="spoiler-5-grid">
+            <!-- 1. Sosial -->
+            <div class="spoiler-card" onclick="openTeamDetailPage('sosial')">
+              <div>
+                <div class="spoiler-icon"><i class="fa-solid fa-people-roof"></i></div>
+                <span class="spoiler-badge">6 Kegiatan</span>
+                <h3 class="spoiler-title">Statistik Sosial</h3>
+                <p class="spoiler-desc">
+                  Data taraf hidup: kemiskinan makro, ketenagakerjaan, kesehatan, dan potensi desa (SUSENAS, SAKERNAS).
+                </p>
+              </div>
+              <div class="spoiler-link">
+                Lihat Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 2. Produksi -->
+            <div class="spoiler-card" onclick="openTeamDetailPage('produksi')">
+              <div>
+                <div class="spoiler-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+                <span class="spoiler-badge">24 Kegiatan</span>
+                <h3 class="spoiler-title">Statistik Produksi</h3>
+                <p class="spoiler-desc">
+                  Sektor riil: pangan (Ubinan, KSA), peternakan, perikanan, industri manufaktur, dan pertambangan.
+                </p>
+              </div>
+              <div class="spoiler-link">
+                Lihat Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 3. Distribusi -->
+            <div class="spoiler-card" onclick="openTeamDetailPage('distribusi')">
+              <div>
+                <div class="spoiler-icon"><i class="fa-solid fa-shop"></i></div>
+                <span class="spoiler-badge">16 Kegiatan</span>
+                <h3 class="spoiler-title">Statistik Distribusi</h3>
+                <p class="spoiler-desc">
+                  Peredaran barang/jasa: Sensus Ekonomi 2026, inflasi IHK, pariwisata hotel, dan logistik maritim.
+                </p>
+              </div>
+              <div class="spoiler-link">
+                Lihat Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 4. NWAS -->
+            <div class="spoiler-card" onclick="openTeamDetailPage('nwas')">
+              <div>
+                <div class="spoiler-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="spoiler-badge">6 Kegiatan</span>
+                <h3 class="spoiler-title">Neraca (NWAS)</h3>
+                <p class="spoiler-desc">
+                  Integrator makro: Produk Domestik Regional Bruto (PDRB 17 Lapangan Usaha & Pengeluaran).
+                </p>
+              </div>
+              <div class="spoiler-link">
+                Lihat Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 5. IPDS -->
+            <div class="spoiler-card" onclick="openTeamDetailPage('ipds')">
+              <div>
+                <div class="spoiler-icon"><i class="fa-solid fa-network-wired"></i></div>
+                <span class="spoiler-badge">6 Layanan</span>
+                <h3 class="spoiler-title">Tim IPDS</h3>
+                <p class="spoiler-desc">
+                  Infrastruktur TI, server CAPI FASIH, peta Wilkerstat Spasial, PST, website, dan Satu Data.
+                </p>
+              </div>
+              <div class="spoiler-link">
+                Lihat Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tombol Lihat Selengkapnya Utama ke Portal Tim -->
+          <div style="text-align: center;">
+            <button onclick="navigateToPage('team-hub')" class="btn btn-primary" style="padding: 0.9rem 2rem;">
+              <i class="fa-solid fa-layer-group"></i> Buka Portal Lengkap 5 Tim BPS <i class="fa-solid fa-arrow-right" style="margin-left: 0.35rem;"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. STORYTELLING TIMELINE -->
+      <section class="timeline-section" id="alur-kegiatan">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-pill">Siklus Bisnis Statistik</div>
+            <h2 class="section-title">Alur Operasional Terintegrasi</h2>
+            <p class="section-subtitle">
+              Tata kelola 4 fase pengumpulan dan pengolahan data statistik BPS.
+            </p>
+          </div>
+
+          <div class="story-timeline">
+            <div class="timeline-node">
+              <div class="timeline-icon-dot"><i class="fa-solid fa-file-signature"></i></div>
+              <div class="timeline-card">
+                <div class="timeline-step">Fase 01</div>
+                <h3 class="timeline-title">Perencanaan & Kerangka Acuan (KAK)</h3>
+                <p class="timeline-text">
+                  Penyusunan KAK, penarikan kerangka sampel blok sensus Wilkerstat, penetapan Surat Keputusan (SK) Tim, dan standardisasi instrumen kuesioner Satu Data.
+                </p>
+              </div>
+            </div>
+
+            <div class="timeline-node">
+              <div class="timeline-icon-dot"><i class="fa-solid fa-chalkboard-user"></i></div>
+              <div class="timeline-card">
+                <div class="timeline-step">Fase 02</div>
+                <h3 class="timeline-title">Pelatihan Petugas & Pengumpulan CAPI</h3>
+                <p class="timeline-text">
+                  Pelatihan instruktur dan petugas lapangan (PCL/PML) serta pelaksanaan pencacahan tatap muka langsung di lapangan berbasis aplikasi mobile FASIH.
+                </p>
+              </div>
+            </div>
+
+            <div class="timeline-node">
+              <div class="timeline-icon-dot"><i class="fa-solid fa-list-check"></i></div>
+              <div class="timeline-card">
+                <div class="timeline-step">Fase 03</div>
+                <h3 class="timeline-title">Validasi Konsistensi & Approval FASIH</h3>
+                <p class="timeline-text">
+                  Pemeriksaan data anomali di tingkat pengawas lapangan, rekonsiliasi angka statistik sektoral, dan verifikasi kualitas data sesuai kaidah metodologi ilmiah.
+                </p>
+              </div>
+            </div>
+
+            <div class="timeline-node">
+              <div class="timeline-icon-dot"><i class="fa-solid fa-box-archive"></i></div>
+              <div class="timeline-card">
+                <div class="timeline-step">Fase 04</div>
+                <h3 class="timeline-title">Diseminasi BRS & Pengarsipan Digital</h3>
+                <p class="timeline-text">
+                  Rilis resmi Berita Resmi Statistik (BRS), publikasi Kabupaten Dalam Angka, serta pengarsipan abadi seluruh dokumen instrumen dan metadata ke STATIVA.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. DIGITAL VAULT & ARSIP -->
+      <section class="archive-section" id="arsip-digital">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-pill">Memori Institusi</div>
+            <h2 class="section-title">Pusat Arsip & Pengetahuan Digital</h2>
+            <p class="section-subtitle">
+              Penyimpanan abadi seluruh dokumen KAK, SK Tim, Pedoman, Kuesioner, dan Publikasi.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <div class="feature-box">
+              <div class="feature-icon-wrapper"><i class="fa-solid fa-file-lines"></i></div>
+              <h3 class="feature-title">Repositori Kuesioner & SK</h3>
+              <p class="feature-text">
+                Penyimpanan terpusat dokumen resmi: Kerangka Acuan Kerja (KAK), SK Penetapan Petugas, Buku Pedoman Pencacah (Buku 1/2), dan formulir kuesioner cetak/digital.
+              </p>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-icon-wrapper"><i class="fa-solid fa-clock-rotate-left"></i></div>
+              <h3 class="feature-title">Changelog Metodologi</h3>
+              <p class="feature-text">
+                Pencatatan riwayat perubahan konsep definisi, pergeseran tahun dasar inflasi, dan pemutakhiran klasifikasi baku (KBLI/KBJI/COICOP) antar-tahun.
+              </p>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-icon-wrapper"><i class="fa-solid fa-robot"></i></div>
+              <h3 class="feature-title">FASIH Data Scraping Bridge</h3>
+              <p class="feature-text">
+                Sinkronisasi otomatis progres realisasi survei lapangan langsung dari portal web FASIH BPS melalui adapter scraper terenkripsi.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. FAQ -->
+      <section class="faq-section" id="faq">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-pill">Tanya Jawab</div>
+            <h2 class="section-title">Pertanyaan yang Sering Diajukan</h2>
+            <p class="section-subtitle">Informasi seputar sistem STATIVA dan sinkronisasi FASIH.</p>
+          </div>
+
+          <div class="faq-wrapper">
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>Apa fungsi tombol Scraping Data FASIH pada detail survei?</span>
+                <i class="fa-solid fa-chevron-down faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  Tombol tersebut mengeksekusi script bot scraping terenkripsi yang menghubungkan STATIVA ke backend FASIH untuk mengambil data riil jumlah dokumen masuk, status approval PML/Koseka, dan beban kerja petugas secara real-time.
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question-btn" aria-expanded="false">
+                <span>Apa peran Tim IPDS di STATIVA?</span>
+                <i class="fa-solid fa-chevron-down faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-content">
+                  Meskipun Tim IPDS umumnya tidak melakukan pencacahan survei lapangan primer, tim ini memegang peranan krusial sebagai tulang punggung teknologi: mengelola server database, aplikasi CAPI FASIH, peta Wilkerstat, Pelayanan Statistik Terpadu (PST), dan diseminasi publikasi daerah.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. CONTACT -->
+      <section class="contact-section" id="kontak">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-pill">Layanan BPS</div>
+            <h2 class="section-title">Konsultasi & Koordinasi Statistik</h2>
+            <p class="section-subtitle">Hubungi tim BPS Kabupaten Kepulauan Sula.</p>
+          </div>
+
+          <div class="contact-grid">
+            <div class="contact-info-card">
+              <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Kantor Pelayanan Statistik Terpadu</h3>
+              <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+                Jl. Pelabuhan No. 1, Sanana, Kab. Kepulauan Sula, Maluku Utara<br>
+                Email: bps8204@bps.go.id | PST: 08.00 - 15.30 WITA
+              </p>
+            </div>
+
+            <div class="contact-form-card">
+              <form id="contactForm" onsubmit="event.preventDefault(); alert('Pesan koordinasi Anda telah terkirim ke PST BPS!');">
+                <div class="form-group">
+                  <label class="form-label">Nama Lengkap</label>
+                  <input type="text" class="form-control" placeholder="Nama Anda" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" placeholder="nama@instansi.go.id" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Pesan</label>
+                  <textarea rows="3" class="form-control" placeholder="Tuliskan pesan..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                  Kirim Pesan Koordinasi
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 2: LEVEL 2 - PORTAL PEMILIH 5 TIM (HANYA 5 TIM, BERSIH & FOKUS)   -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="pageTeamHub" class="page-view">
+      <div class="team-hub-page-header">
+        <div class="container">
+          <div class="section-pill">Portal Resmi</div>
+          <h1 class="section-title" style="margin-bottom: 0.75rem;">Portal Tim Statistik & Layanan BPS</h1>
+          <p class="section-subtitle" style="max-width: 720px; margin: 0 auto;">
+            Pilih tim untuk melihat tugas pokok, landasan hukum, dan daftar ringkas seluruh kegiatan atau layanan yang dinaungi.
+          </p>
+
+          <!-- 5 TIM CLEAN CARDS SELECTION (DAH SAMPE SITU AJA UNTUK TAMPILAN AWALNYA) -->
+          <div class="hub-teams-grid">
+            <!-- 1. Statistik Sosial -->
+            <div class="hub-team-card" onclick="openTeamDetailPage('sosial')">
+              <div>
+                <div class="hub-team-icon-wrapper"><i class="fa-solid fa-people-roof"></i></div>
+                <span class="hub-team-badge">6 Kegiatan Survei & Sensus</span>
+                <h3 class="hub-team-title">Statistik Sosial</h3>
+                <p class="hub-team-desc">
+                  Mengelola data taraf hidup masyarakat: kemiskinan makro, ketenagakerjaan, kesehatan, pendidikan, dan potensi perdesaan (SUSENAS, SAKERNAS, PODES).
+                </p>
+              </div>
+              <div class="hub-team-action-btn">
+                Buka Halaman Tim Sosial <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 2. Statistik Produksi -->
+            <div class="hub-team-card" onclick="openTeamDetailPage('produksi')">
+              <div>
+                <div class="hub-team-icon-wrapper"><i class="fa-solid fa-wheat-awn"></i></div>
+                <span class="hub-team-badge">24 Kegiatan Sektor Riil</span>
+                <h3 class="hub-team-title">Statistik Produksi</h3>
+                <p class="hub-team-desc">
+                  Mengelola sektor riil komoditas fisik: tanaman pangan (Ubinan, KSA), hortikultura, perkebunan, peternakan, perikanan, manufaktur, dan tambang.
+                </p>
+              </div>
+              <div class="hub-team-action-btn">
+                Buka Halaman Tim Produksi <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 3. Statistik Distribusi -->
+            <div class="hub-team-card" onclick="openTeamDetailPage('distribusi')">
+              <div>
+                <div class="hub-team-icon-wrapper"><i class="fa-solid fa-shop"></i></div>
+                <span class="hub-team-badge">16 Kegiatan Harga & Jasa</span>
+                <h3 class="hub-team-title">Statistik Distribusi</h3>
+                <p class="hub-team-desc">
+                  Mengelola peredaran barang & jasa: Sensus Ekonomi 2026, indeks harga & inflasi IHK, harga perdesaan, pariwisata hotel, dan logistik maritim.
+                </p>
+              </div>
+              <div class="hub-team-action-btn">
+                Buka Halaman Tim Distribusi <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 4. Neraca (NWAS) -->
+            <div class="hub-team-card" onclick="openTeamDetailPage('nwas')">
+              <div>
+                <div class="hub-team-icon-wrapper"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="hub-team-badge">6 Kegiatan PDRB & Makro</span>
+                <h3 class="hub-team-title">Neraca (NWAS)</h3>
+                <p class="hub-team-desc">
+                  Mengintegrasikan seluruh data sektoral menjadi Produk Domestik Regional Bruto (PDRB 17 Lapangan Usaha & Pengeluaran) serta analisis makro.
+                </p>
+              </div>
+              <div class="hub-team-action-btn">
+                Buka Halaman Tim NWAS <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+
+            <!-- 5. Tim IPDS -->
+            <div class="hub-team-card" onclick="openTeamDetailPage('ipds')">
+              <div>
+                <div class="hub-team-icon-wrapper"><i class="fa-solid fa-network-wired"></i></div>
+                <span class="hub-team-badge">6 Portofolio Layanan</span>
+                <h3 class="hub-team-title">Tim IPDS</h3>
+                <p class="hub-team-desc">
+                  Integrasi Pengolahan & Diseminasi Statistik: Mengelola infrastruktur TI, server CAPI FASIH, peta Wilkerstat Spasial, PST, website, dan Satu Data.
+                </p>
+              </div>
+              <div class="hub-team-action-btn">
+                Buka Halaman Tim IPDS <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 3: LEVEL 3 - HALAMAN KHUSUS TIM TERPILIH (DEFINISI + LIST SURVEI)  -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="pageTeamDetail" class="page-view">
+      <div class="single-team-header">
+        <div class="container">
+          <div class="breadcrumb-trail">
+            <a onclick="navigateToPage('home')"><i class="fa-solid fa-house"></i> Beranda</a>
+            <span>/</span>
+            <a onclick="navigateToPage('team-hub')">Portal Tim BPS</a>
+            <span>/</span>
+            <span id="singleTeamBreadcrumbTitle"></span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div class="section-pill" style="margin-bottom: 0.5rem;">Halaman Tim Resmi</div>
+              <h1 id="singleTeamPageTitle" style="font-size: 2.25rem; font-weight: 800; color: var(--color-text-primary); letter-spacing: -0.03em;"></h1>
+              <p id="singleTeamPageSubtitle" style="font-size: 0.95rem; color: var(--color-text-secondary); max-width: 780px; margin-top: 0.35rem;"></p>
+            </div>
+
+            <button onclick="navigateToPage('team-hub')" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.65rem 1.25rem;">
+              <i class="fa-solid fa-arrow-left"></i> Kembali ke Pilihan Tim
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Rendered dynamically: Definisi Mendalam + List Survei Ringkas -->
+        <div id="singleTeamDynamicContent"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 4: LEVEL 4 - DETAIL KHUSUS SURVEI & SCRAPING FASIH                 -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="pageSurveyDetail" class="page-view">
+      <div class="survey-detail-page-header">
+        <div class="container">
+          <div class="breadcrumb-trail" id="surveyBreadcrumbs">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;">
+            <div>
+              <div id="surveyHeaderBadges" style="margin-bottom: 0.75rem;"></div>
+              <h1 id="surveyHeaderTitle" style="font-size: 2.25rem; font-weight: 800; color: var(--color-text-primary); letter-spacing: -0.03em;"></h1>
+              <p id="surveyHeaderSubtitle" style="font-size: 0.95rem; color: var(--color-text-secondary); max-width: 800px; margin-top: 0.5rem;"></p>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button onclick="backToTeamDetailPage()" class="btn btn-secondary" style="font-size: 0.875rem;">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar Kegiatan
+              </button>
+              <button id="btnTriggerScraping" onclick="openScrapingModal()" class="btn-scraping">
+                <i class="fa-solid fa-bolt-lightning"></i> Jalankan Scraping FASIH
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container survey-detail-container">
+        <div class="survey-detail-grid">
+          <!-- Main Content (Left Column) -->
+          <div>
+            <!-- 1. Latar Belakang & Tujuan -->
+            <div class="detail-card-box">
+              <h2 class="detail-section-heading">
+                <i class="fa-solid fa-book-open" style="color: var(--color-muted-indigo);"></i> 1. Latar Belakang & Tujuan Pokok
+              </h2>
+              <p class="detail-body-text" id="surveyDetailTujuan"></p>
+              <p class="detail-body-text" id="surveyDetailManfaat"></p>
+            </div>
+
+            <!-- 2. Metodologi Sampling & Variabel -->
+            <div class="detail-card-box">
+              <h2 class="detail-section-heading">
+                <i class="fa-solid fa-microscope" style="color: var(--color-muted-indigo);"></i> 2. Ruang Lingkup & Metodologi Pelaksanaan
+              </h2>
+              <div id="surveyDetailMetodologi"></div>
+            </div>
+
+            <!-- 3. Indikator yang Dihasilkan -->
+            <div class="detail-card-box">
+              <h2 class="detail-section-heading">
+                <i class="fa-solid fa-chart-column" style="color: var(--color-muted-indigo);"></i> 3. Indikator & Publikasi yang Dihasilkan
+              </h2>
+              <div id="surveyDetailIndikator"></div>
+            </div>
+
+            <!-- 4. Dokumen & Instrumen Resmi -->
+            <div class="detail-card-box">
+              <h2 class="detail-section-heading">
+                <i class="fa-solid fa-file-pdf" style="color: var(--color-muted-indigo);"></i> 4. Dokumen & Kuesioner Resmi Terkait
+              </h2>
+              <div id="surveyDetailDokumen"></div>
+            </div>
+          </div>
+
+          <!-- Sidebar (Right Column) -->
+          <div class="detail-sidebar-box">
+            <div class="scraping-box-header">
+              <i class="fa-solid fa-server" style="color: #0284C7;"></i> Integrasi Portal FASIH
+            </div>
+            <p style="font-size: 0.8125rem; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+              Data progres realisasi di bawah ini terhubung langsung ke sistem pengumpulan data mobile FASIH BPS.
+            </p>
+
+            <div style="background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem; margin-bottom: 1.25rem;">
+              <span style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 700; text-transform: uppercase;">Status Scraping:</span>
+              <p style="font-size: 0.875rem; font-weight: 700; color: #16A34A; margin-top: 0.25rem;">
+                <i class="fa-solid fa-circle-check"></i> Adapter Aktif & Siap Sync
+              </p>
+              <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.35rem;" id="sidebarFasihSurveyId">
+                Survey ID: <code>FASIH-2026-ACTIVE</code>
+              </p>
+            </div>
+
+            <button onclick="openScrapingModal()" class="btn-scraping" style="width: 100%; justify-content: center;">
+              <i class="fa-solid fa-arrows-rotate"></i> Sinkronisasi Data Sekarang
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- MODAL TERMINAL SCRAPING SIMULATION                                      -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <div id="scrapingModal" class="scraping-terminal-modal">
+    <div class="scraping-modal-content">
+      <div class="modal-header-bar">
+        <span><i class="fa-solid fa-terminal"></i> STATIVA FASIH Scraper Engine v2.4</span>
+        <button onclick="closeScrapingModal()" style="color: #94A3B8; font-size: 1rem;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="terminal-logs" id="terminalLogOutput">
+        <div>[00:00:01] <span style="color: #38BDF8;">[INIT]</span> Menghubungkan ke FASIH SSO Gateway (https://fasih.bps.go.id)...</div>
+      </div>
+      <div style="padding: 0.75rem 1rem; background-color: #1E293B; border-top: 1px solid #334155; display: flex; justify-content: flex-end;">
+        <button onclick="closeScrapingModal()" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.75rem;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                                  -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div>
+        &copy; 2026 <strong>STATIVA</strong> — Badan Pusat Statistik Kabupaten Kepulauan Sula. Hak Cipta Dilindungi.
+      </div>
+      <div class="footer-social-links">
+        <a href="https://kepulauansulakab.bps.go.id" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Portal Website BPS Kepulauan Sula">
+          <i class="fa-solid fa-globe"></i>
+        </a>
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Facebook BPS">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Instagram BPS">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top-btn" id="backToTopBtn" aria-label="Kembali ke atas">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- JAVASCRIPT LOGIC & ROUTER                                               -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <script>
+    // ─── MASTER DATABASE 5 TIM & SURVEI ───
+    const MASTER_TEAMS = {
+      sosial: {
+        id: "sosial",
+        nama: "Statistik Sosial",
+        unitKerja: "Tim Kerja Statistik Kesejahteraan Rakyat dan Ketahanan Sosial",
+        tagStyle: "background-color: var(--team-sosial-bg); color: var(--team-sosial-text); border: 1px solid var(--team-sosial-border);",
+        deskripsi: "Tim Statistik Sosial bertanggung jawab atas seluruh pendataan yang bersentuhan langsung dengan kualitas hidup manusia. Data dari tim ini menjadi rujukan tunggal pemerintah dalam penetapan garis kemiskinan makro, penyaluran bansos (PKH, BPNT), evaluasi IPM, ketenagakerjaan, dan perlindungan sosial.",
+        dasarHukum: "Undang-Undang No. 16 Tahun 1997 tentang Statistik; Perpres No. 39 Tahun 2019 tentang Satu Data Indonesia; Perpres Penanggulangan Kemiskinan Ekstrem.",
+        tupoksi: [
+          "Melaksanakan pengumpulan, pengolahan, dan diseminasi data demografi, ketenagakerjaan, kesehatan, dan pendidikan.",
+          "Menghitung angka kemiskinan makro (P0, P1, P2), Garis Kemiskinan (GK), serta ketimpangan pendapatan (Gini Ratio).",
+          "Memantau dinamika ketenagakerjaan: Tingkat Pengangguran Terbuka (TPT), Tingkat Partisipasi Angkatan Kerja (TPAK), dan upah buruh.",
+          "Melakukan pendataan potensi desa di 100% desa/kelurahan melalui PODES.",
+          "Menyelenggarakan pembinaan statistik sektoral melalui Program Desa Cantik."
+        ],
+        indikatorKunci: [
+          "Angka Kemiskinan Makro (P0/P1/P2)", "Garis Kemiskinan", "Gini Ratio", "TPT Pengangguran", "TPAK", "Indeks Pembangunan Manusia (IPM)", "Indeks Kesulitan Geografis (IKG)"
+        ],
+        survei: [
+          {
+            id: "sos-susenas",
+            kode: "SOS-SUSENAS",
+            nama: "Survei Sosial Ekonomi Nasional (SUSENAS)",
+            frekuensi: "Semesteran (Maret & September)",
+            platform: "FASIH CAPI Mobile / Web",
+            responden: "Rumah Tangga Biasa Sampel Blok Sensus",
+            cakupan: "Seluruh Kecamatan di Kab. Kepulauan Sula",
+            tujuan: "Menghasilkan data pokok taraf hidup masyarakat, pengeluaran konsumsi kalori/protein, dan menjadi sumber rujukan tunggal angka kemiskinan nasional serta Gini Ratio.",
+            manfaat: "Digunakan oleh Bappenas, Kemenkeu, dan Pemda untuk evaluasi target pengentasan kemiskinan ekstrem dan alokasi perlindungan sosial.",
+            metodologi: "Two-Stage Stratified Sampling dengan blok sensus SP sebagai kerangka induk. Dilengkapi modul konsumsi makanan & non-makanan pada edisi Maret.",
+            indikator: ["Persentase Penduduk Miskin (P0)", "Garis Kemiskinan", "Rata-rata Konsumsi Kalori/Protein", "Angka Partisipasi Murni (APM)", "Akses Air Minum Layak"],
+            dokumen: "Daftar VSEN26.K (Kor), VSEN26.M (Konsumsi), Buku Pedoman Pencacah 1/2, SK Tim Pelaksana"
+          },
+          {
+            id: "sos-sakernas",
+            kode: "SOS-SAKERNAS",
+            nama: "Survei Angkatan Kerja Nasional (SAKERNAS)",
+            frekuensi: "Semesteran (Februari & Agustus)",
+            platform: "FASIH CAPI Mobile",
+            responden: "Anggota Rumah Tangga Usia Kerja (15 Tahun ke Atas)",
+            cakupan: "Kabupaten Kepulauan Sula",
+            tujuan: "Menyediakan data pokok ketenagakerjaan berkesinambungan untuk memantau pengangguran terbuka, pencari kerja, partisipasi angkatan kerja, dan upah buruh.",
+            manfaat: "Menjadi rujukan penetapan Upah Minimum Regional (UMR) dan perumusan kebijakan pembukaan lapangan kerja.",
+            metodologi: "Two-Stage Stratified Sampling dengan target estimasi representatif level kabupaten pada edisi Agustus.",
+            indikator: ["Tingkat Pengangguran Terbuka (TPT)", "TPAK", "Jumlah Pekerja Formal vs Informal", "Rata-rata Upah/Gaji Buruh"],
+            dokumen: "Daftar VSAKER26.AK, Buku Pedoman Konsep Ketenagakerjaan, KAK Sakernas"
+          },
+          {
+            id: "sos-seruti",
+            kode: "SOS-SERUTI",
+            nama: "Survei Ekonomi Rumah Tangga Triwulanan (SERUTI)",
+            frekuensi: "Triwulanan (Maret, Juni, September, Desember)",
+            platform: "FASIH CAPI Mobile",
+            responden: "Rumah Tangga Sub-sampel SUSENAS",
+            cakupan: "Blok Sensus Terpilih",
+            tujuan: "Mengumpulkan data terintegrasi mengenai neraca pendapatan, pengeluaran konsumsi, tabungan, transfer modal, dan investasi aset rumah tangga.",
+            manfaat: "Menyediakan data aliran dana rumah tangga untuk penyusunan Neraca Arus Dana (Flow of Funds).",
+            metodologi: "Sub-sampling terintegrasi dengan modul pengeluaran SUSENAS Maret.",
+            indikator: ["Struktur Pendapatan Rumah Tangga", "Proporsi Tabungan & Investasi", "Neraca Arus Modal Rumah Tangga"],
+            dokumen: "Daftar SERUTI26, Modul Arus Modal Rumah Tangga"
+          },
+          {
+            id: "sos-podes",
+            kode: "SOS-PODES",
+            nama: "Pendataan Potensi Desa (PODES)",
+            frekuensi: "Tiga Kali dalam 10 Tahun",
+            platform: "CAPI Mobile & Peta Spasial Wilkerstat",
+            responden: "Kepala Desa, Lurah, dan Sekretaris Desa",
+            cakupan: "100% Desa dan Kelurahan di Kab. Kepulauan Sula (167 Wilayah)",
+            tujuan: "Menyediakan data ketersediaan infrastruktur fisik, sarana pendidikan, kesehatan, akses transportasi, dan kerawanan bencana di seluruh desa.",
+            manfaat: "Penetapan status desa tertinggal/maju dan formula alokasi Dana Desa oleh Kemendes PDTT.",
+            metodologi: "Sensus lengkap seluruh desa dan kelurahan di Indonesia.",
+            indikator: ["Indeks Kesulitan Geografis (IKG)", "Status Kemandirian Desa", "Ketersediaan Fasilitas Publik"],
+            dokumen: "Kuesioner PODES2024-Desa, Pedoman Konsep Wilayah"
+          },
+          {
+            id: "sos-polkam",
+            kode: "SOS-POLKAM",
+            nama: "Statistik Politik dan Keamanan",
+            frekuensi: "Sananan",
+            platform: "Kompilasi Produk Administrasi & Wawancara",
+            responden: "Polres, Kejaksaan, Pengadilan Negeri, Bawaslu, KPU, Kesbangpol",
+            cakupan: "Satker Penegak Hukum & Lembaga Pemilu Daerah",
+            tujuan: "Menyusun indikator stabilitas kamtibmas, angka kejahatan (crime rate), penyelesaian perkara hukum, dan partisipasi pemilu daerah.",
+            manfaat: "Evaluasi ketahanan stabilitas politik dan penegakan hukum daerah.",
+            metodologi: "Kompilasi data sekunder dari buku register perkara institusi penegak hukum.",
+            indikator: ["Tingkat Kejahatan per 100.000 Penduduk", "Angka Partisipasi Pemilih", "Rasio Penegakan Hukum"],
+            dokumen: "Formulir Polkam-A, Polkam-B, Publikasi Statistik Kriminal"
+          },
+          {
+            id: "sos-desacantik",
+            kode: "SOS-DESACANTIK",
+            nama: "Program Pembinaan Desa Cinta Statistik (Desa Cantik)",
+            frekuensi: "Kegiatan Berkelanjutan",
+            platform: "Portal Pembinaan SDI & Kompilasi Desa",
+            responden: "Aparatur Pemerintah Desa Binaan",
+            cakupan: "Desa Model Terpilih di Kab. Kepulauan Sula",
+            tujuan: "Meningkatkan literasi statistik aparatur desa agar mampu mengelola, memvalidasi, dan memanfaatkan data desa untuk perencanaan dana desa.",
+            manfaat: "Peningkatan kualitas tata kelola data di tingkat akar rumput sesuai Satu Data Indonesia.",
+            metodologi: "Asistensi teknis dan standarisasi buku register potensi desa.",
+            indikator: ["Tingkat Kematangan Tata Kelola Data Desa", "Kelengkapan Profil Statistik Desa"],
+            dokumen: "Modul Pembinaan Desa Cantik, SOP Pengelolaan Data Desa"
+          }
+        ]
+      },
+
+      produksi: {
+        id: "produksi",
+        nama: "Statistik Produksi",
+        unitKerja: "Tim Kerja Statistik Produksi (Pertanian, Industri, Energi, Tambang & Konstruksi)",
+        tagStyle: "background-color: var(--team-produksi-bg); color: var(--team-produksi-text); border: 1px solid var(--team-produksi-border);",
+        deskripsi: "Tim Statistik Produksi mendata seluruh sektor riil komoditas fisik: tanaman pangan strategis, hortikultura, perkebunan, peternakan, perikanan tangkap/budidaya, kehutanan, industri manufaktur, pertambangan minerba, penggalian kuari, dan konstruksi.",
+        dasarHukum: "UU No. 16 Tahun 1997 tentang Statistik; UU No. 18 Tahun 2012 tentang Pangan; Perpres Satu Data Indonesia.",
+        tupoksi: [
+          "Menyelenggarakan pengukuran objektif produktivitas panen padi melalui Survei Ubinan.",
+          "Menghitung estimasi luas panen dan produksi beras berbasis citra satelit Kerangka Sampel Area (KSA).",
+          "Memantau pertumbuhan volume produksi industri manufaktur mikro, kecil, sedang, dan besar (IMK/IBS).",
+          "Mendata pemotongan hewan di RPH (LTP), lelang ikan di TPI (PP-TPI), dan budidaya tambak (PIT).",
+          "Mendata profil pertambangan mineral batubara, galian C, dan konstruksi."
+        ],
+        indikatorKunci: [
+          "Produktivitas Padi (Ku/Ha)", "Estimasi Luas Panen & Produksi Beras", "Indeks Produksi Manufaktur", "Nilai Tukar Petani (NTP)", "Produksi Perikanan Tangkap", "Populasi Ternak", "Nilai Tambah Konstruksi"
+        ],
+        survei: [
+          {
+            id: "prod-ubinan",
+            kode: "PROD-UBINAN",
+            nama: "Survei Ubinan Padi dan Palawija",
+            frekuensi: "Subround (3 Kali Setahun Saat Panen)",
+            platform: "FASIH CAPI Mobile & Plot Ubinan 2.5m x 2.5m",
+            responden: "Petani pada Petak Terpilih yang Sedang Panen",
+            cakupan: "Seluruh Lahan Sawah & Ladang Sampel di Kab. Kepulauan Sula",
+            tujuan: "Memperoleh data riil produktivitas hasil panen (kuintal per hektar) padi sawah, padi ladang, jagung, kedelai, dan ubi kayu.",
+            manfaat: "Menghitung produksi pangan nasional dan ketahanan beras.",
+            metodologi: "Pengukuran objektif pemotongan petak standar 2,5 meter x 2,5 meter pada plot terpilih.",
+            indikator: ["Angka Produktivitas Padi (Ku/Ha)", "Kadar Air Gabah Kering Panen (GKP)"],
+            dokumen: "Daftar SUB-S, Timbangan Digital, Alat Ubinan Standar BPS"
+          },
+          {
+            id: "prod-ksa",
+            kode: "PROD-KSA",
+            nama: "Kerangka Sampel Area (KSA) Padi dan Jagung",
+            frekuensi: "Bulanan (7 Hari Terakhir Setiap Bulan)",
+            platform: "Aplikasi Mobile KSA berbasis GPS & Geotagging",
+            responden: "Segmen Lahan Pertanian Berkoordinat Spasial",
+            cakupan: "Segmen KSA Tetap di Seluruh Wilayah Kepulauan Sula",
+            tujuan: "Mengestimasi luas panen padi dan jagung secara objektif berbasis pengamatan fase pertumbuhan tanaman di tiap titik segmen.",
+            manfaat: "Deteksi dini potensi surplus atau defisit beras nasional.",
+            metodologi: "Area Sampling Frame (ASF) berbasis citra satelit beresolusi tinggi dengan 9 sub-segmen per titik.",
+            indikator: ["Estimasi Luas Panen Bulanan", "Proyeksi Potensi Panen 3 Bulan ke Depan", "Fase Tanam/Vegetatif/Generatif"],
+            dokumen: "Aplikasi KSA BPS-BPPT, Peta Kerja Segmen Spasial"
+          },
+          {
+            id: "prod-imk",
+            kode: "PROD-IMK",
+            nama: "Survei Industri Mikro dan Kecil (IMK)",
+            frekuensi: "Triwulanan & Sananan",
+            platform: "FASIH CAPI Mobile / Web",
+            responden: "Pengusaha Manufaktur Skala 1-19 Tenaga Kerja",
+            cakupan: "Sentra Kerajinan, Industri Makanan, Pengolahan Ikan, Mebel",
+            tujuan: "Mengetahui profil usaha, penyerapan tenaga kerja, upah, pengeluaran bahan baku, dan nilai tambah industri mikro/kecil.",
+            manfaat: "Perumusan kebijakan bantuan modal dan pembinaan UMKM daerah.",
+            metodologi: "Stratified Two-Stage Cluster Sampling berbasis blok sensus konsentrasi IMK.",
+            indikator: ["Indeks Produksi IMK", "Nilai Tambah Sektor Manufaktur Mikro", "Penyerapan Tenaga Kerja IMK"],
+            dokumen: "Daftar VIMK26-Triwulanan, VIMK26-Sananan"
+          },
+          {
+            id: "prod-ibs",
+            kode: "PROD-IBS",
+            nama: "Survei Industri Besar dan Sedang (IBS)",
+            frekuensi: "Bulanan / Triwulanan & Sananan",
+            platform: "E-Survey Web Portal & FASIH",
+            responden: "Pabrik Pengolahan dengan Tenaga Kerja >= 20 Orang",
+            cakupan: "Pabrik Pengalengan Ikan, Pengolahan Kelapa/Kopra",
+            tujuan: "Menghasilkan Indeks Produksi Manufaktur Besar Sedang sebagai leading indicator pertumbuhan ekonomi sektor sekunder.",
+            manfaat: "Evaluasi daya saing manufaktur dan kapasitas industri daerah.",
+            metodologi: "Sensus lengkap untuk industri besar dan sampling untuk industri sedang.",
+            indikator: ["Indeks Produksi IBS", "Kapasitas Terpasang Mesin", "Nilai Ekspor Manufaktur"],
+            dokumen: "Kuesioner Sananan Perusahaan Industri (STP-IBS)"
+          },
+          {
+            id: "prod-sitasi",
+            kode: "PROD-SITASI",
+            nama: "Survei Terintegrasi Pertanian & Perikanan (SITASI)",
+            frekuensi: "Periodik Multi-Sananan",
+            platform: "FASIH CAPI Mobile",
+            responden: "Rumah Tangga Usaha Pertanian & Perikanan",
+            cakupan: "Kawasan Sentra Pertanian & Pesisir",
+            tujuan: "Mengintegrasikan indikator ekonomi, sosial, dan lingkungan usaha tani/nelayan sesuai standar SDGs Pertanian Dunia (FAO).",
+            manfaat: "Pemenuhan indikator target global ketahanan pangan berkelanjutan.",
+            metodologi: "Agricultural Integrated Survey (AGRIS) modular sampling.",
+            indikator: ["Pendapatan Usaha Tani Bersih", "Penggunaan Pupuk Organik vs Kimia", "Kelayakan Hidup Nelayan"],
+            dokumen: "Kuesioner SITASI-Ekonomi, SITASI-Lingkungan"
+          },
+          {
+            id: "prod-ltp",
+            kode: "PROD-LTP",
+            nama: "Laporan Ternak Potong & RPH (LTP)",
+            frekuensi: "Triwulanan & Sananan",
+            platform: "FASIH Web & Kompilasi RPH",
+            responden: "Pengelola RPH/TPH Pemerintah & Swasta",
+            cakupan: "Seluruh Rumah Potong Hewan di Kab. Kepulauan Sula",
+            tujuan: "Menghitung jumlah pemotongan ternak resmi, estimasi produksi daging merah, dan dinamika populasi ternak daerah.",
+            manfaat: "Monitoring kecukupan pasokan daging segar hewani.",
+            metodologi: "Complete enumeration pada seluruh fasilitas pemotongan hewan resmi.",
+            indikator: ["Jumlah Pemotongan Sapi/Babi/Kambing", "Estimasi Produksi Daging Karkas", "Populasi Ternak Hidup"],
+            dokumen: "Daftar LTP-RPH, Formulir Populasi Ternak"
+          }
+        ]
+      },
+
+      distribusi: {
+        id: "distribusi",
+        nama: "Statistik Distribusi",
+        unitKerja: "Tim Kerja Statistik Distribusi dan Jasa (Harga, Pariwisata, Transportasi & Sensus Ekonomi)",
+        tagStyle: "background-color: var(--team-distribusi-bg); color: var(--team-distribusi-text); border: 1px solid var(--team-distribusi-border);",
+        deskripsi: "Tim Statistik Distribusi mengelola data peredaran barang, jasa, pariwisata, keuangan, dan seluruh kegiatan ekonomi non-pertanian. Termasuk angka inflasi resmi (IHK), harga perdesaan/produsen, Indeks Kemahalan Konstruksi (IKK), perhotelan, logistik pelabuhan, dan Sensus Ekonomi sepuluh tahunan.",
+        dasarHukum: "UU No. 16 Tahun 1997 tentang Statistik; UU No. 1 Tahun 2022 tentang Hubungan Keuangan Pusat dan Daerah; Perpres Satu Data Indonesia.",
+        tupoksi: [
+          "Melaksanakan Sensus Ekonomi (SE) sepuluh tahunan pemetaan seluruh bisnis non-pertanian.",
+          "Mencatat harga komoditas pokok mingguan/bulanan untuk angka inflasi IHK dan harga perdesaan.",
+          "Menyusun Indeks Kemahalan Konstruksi (IKK) untuk formula transfer Dana Alokasi Umum (DAU).",
+          "Memantau pariwisata: Tingkat Penghunian Kamar (TPK) hotel dan profil wisatawan.",
+          "Mendata arus logistik kapal, penumpang, dan kargo pelabuhan laut (Simulan)."
+        ],
+        indikatorKunci: [
+          "Laju Inflasi Bulanan (m-to-m, y-on-y)", "Indeks Kemahalan Konstruksi (IKK)", "Tingkat Penghunian Kamar Hotel (TPK)", "Rata-rata Lama Menginap (RLMT)", "Jumlah Wisatawan Nusantara", "Bongkar Muat Pelabuhan"
+        ],
+        survei: [
+          {
+            id: "dist-se2026",
+            kode: "DIST-SE2026",
+            nama: "Sensus Ekonomi 2026 (SE2026 Listing & Detail)",
+            frekuensi: "Sepuluh Sananan (Tahun Berakhiran 6)",
+            platform: "FASIH CAPI Mobile & Web Enterprise",
+            responden: "100% Seluruh Pelaku Usaha Non-Pertanian",
+            cakupan: "Seluruh Wilayah NKRI dari Perkotaan hingga Pelosok Desa",
+            tujuan: "Memotret lanskap struktur perekonomian nasional non-pertanian, daya saing bisnis, digitalisasi UMKM, dan basis Statistical Business Register (SBR).",
+            manfaat: "Penyusunan peta jalan industri, reformasi iklim investasi, dan basis data Satu Data Usaha.",
+            metodologi: "Sensus lengkap door-to-door dan listing usaha berbasis blok sensus Wilkerstat.",
+            indikator: ["Jumlah Usaha Menurut KBLI", "Jumlah Tenaga Kerja Terserap", "Omset & Nilai Tambah Ekonomi"],
+            dokumen: "Daftar SE26-L, SE26-U, Buku Pedoman Sensus Lengkap"
+          },
+          {
+            id: "dist-shkk",
+            kode: "DIST-SHKK",
+            nama: "Survei Harga Kemahalan Konstruksi (SHKK / IKK)",
+            frekuensi: "Triwulanan",
+            platform: "FASIH Mobile / Web",
+            responden: "Toko Bahan Bangunan, Distributor Semen/Besi, Kontraktor",
+            cakupan: "Pasar Bahan Bangunan di Seluruh Kecamatan",
+            tujuan: "Menyediakan data harga bahan bangunan, sewa alat berat, dan upah tukang untuk menyusun angka Indeks Kemahalan Konstruksi (IKK).",
+            manfaat: "Variabel pengali krusial penghitungan alokasi Dana Alokasi Umum (DAU) oleh Kemenkeu.",
+            metodologi: "Purposive sampling pada pedagang grosir dan pengecer bahan bangunan utama.",
+            indikator: ["Indeks Kemahalan Konstruksi (IKK)", "Rasio Kemahalan Antar-Wilayah"],
+            dokumen: "Daftar SHKK-Bahan, SHKK-Upah, Pedoman Spesifikasi Material"
+          },
+          {
+            id: "dist-vhts",
+            kode: "DIST-VHTS",
+            nama: "Survei Tingkat Penghunian Kamar Hotel (VHTS & VHTL)",
+            frekuensi: "Bulanan",
+            platform: "FASIH Web & Mobile CAPI",
+            responden: "General Manager / Manajer Reservasi Hotel & Penginapan",
+            cakupan: "100% Hotel Berbintang dan Sampel Hotel Non-Bintang di Kepulauan Sula",
+            tujuan: "Menghitung tingkat hunian kamar, rata-rata lama menginap tamu domestik/asing, dan rasio ganda tamu hotel.",
+            manfaat: "Pemantauan tren sektor pariwisata dan okupansi perhotelan.",
+            metodologi: "Sensus pada hotel berbintang dan sampling berstrata pada hotel non-bintang.",
+            indikator: ["Tingkat Penghunian Kamar (TPK %)", "Rata-rata Lama Menginap Tamu (RLMT)", "Tamu Mancanegara vs Domestik"],
+            dokumen: "Kuesioner VHTS Bulanan, Daftar VHTL Penginapan"
+          },
+          {
+            id: "dist-harga-desa",
+            kode: "DIST-HARGA-DESA",
+            nama: "Survei Harga Produsen & Konsumen Perdesaan (HD / HKD)",
+            frekuensi: "Bulanan",
+            platform: "FASIH CAPI Mobile",
+            responden: "Petani Produsen & Warung Eceran di Desa Sampel",
+            cakupan: "Kecamatan Sentra Produksi Perdesaan",
+            tujuan: "Mencatat harga yang diterima petani dan harga yang dibayar petani untuk penghitungan Nilai Tukar Petani (NTP).",
+            manfaat: "Mengukur daya beli dan kesejahteraan petani di perdesaan.",
+            metodologi: "Panel pedagang dan petani tetap di desa sampel terpilih.",
+            indikator: ["Indeks Harga Diterima Petani (It)", "Indeks Harga Dibayar Petani (Ib)", "Nilai Tukar Petani (NTP)"],
+            dokumen: "Daftar HD-1 s.d. HD-4, Daftar HKD-Konsumsi"
+          }
+        ]
+      },
+
+      nwas: {
+        id: "nwas",
+        nama: "Neraca Wilayah & Analisis Statistik (NWAS)",
+        unitKerja: "Tim Kerja Neraca Wilayah dan Analisis Statistik (NWAS)",
+        tagStyle: "background-color: var(--team-nwas-bg); color: var(--team-nwas-text); border: 1px solid var(--team-nwas-border);",
+        deskripsi: "Tim NWAS bertindak sebagai integrator tertinggi seluruh data sektoral ke dalam kerangka Neraca Nasional (SNA). Menghitung Produk Domestik Regional Bruto (PDRB 17 Sektor), Tabel Input-Output, pembentukan modal (investasi PMTB), dan analisis ekonomi makro daerah.",
+        dasarHukum: "UU No. 16 Tahun 1997 tentang Statistik; Manual SNA 2008 PBB; Perpres Satu Data Indonesia.",
+        tupoksi: [
+          "Menghitung PDRB Lapangan Usaha (17 Sektor) Triwulanan dan Sananan (ADHB & ADHK).",
+          "Menghitung PDRB Pengeluaran (Konsumsi RT, LNPRT, Pemerintah, PMTB, Ekspor/Impor).",
+          "Melaksanakan Survei Lembaga Non-Profit Rumah Tangga (SKLNPT).",
+          "Melaksanakan Survei Khusus Transaksi Neraca Produksi (SKTNP).",
+          "Menyusun analisis makro daerah dan Disparitas Antar-Wilayah."
+        ],
+        indikatorKunci: [
+          "Laju Pertumbuhan Ekonomi Daerah (PDRB Riil %)", "PDRB Per Kapita", "Struktur 17 Lapangan Usaha", "Investasi (PMTB)", "Konsumsi Rumah Tangga", "Tabel Input-Output"
+        ],
+        survei: [
+          {
+            id: "nwas-pdrb-lu",
+            kode: "NWAS-PDRB-LU",
+            nama: "Penghitungan PDRB Lapangan Usaha (17 Sektor)",
+            frekuensi: "Triwulanan & Sananan",
+            platform: "Sistem Neraca Regional (SIMNERA)",
+            responden: "Integrasi Seluruh Data Statistik Sektoral BPS & OPD Daerah",
+            cakupan: "Perekonomian Kabupaten Kepulauan Sula",
+            tujuan: "Menghitung total nilai tambah bruto (NTB) yang dihasilkan oleh seluruh unit produksi di 17 sektor lapangan usaha.",
+            manfaat: "Mengetahui laju pertumbuhan ekonomi daerah dan kontribusi sektor unggulan.",
+            metodologi: "Pendekatan Produksi (Production Approach) berbasis System of National Accounts (SNA 2008).",
+            indikator: ["Pertumbuhan Ekonomi Daerah (%)", "Nilai PDRB ADHB & ADHK", "Sektor Unggulan Daerah"],
+            dokumen: "Tabel PDRB 17 Sektor, Berita Resmi Statistik Pertumbuhan Ekonomi"
+          },
+          {
+            id: "nwas-pdrb-peng",
+            kode: "NWAS-PDRB-PENG",
+            nama: "Penghitungan PDRB Pengeluaran (7 Komponen)",
+            frekuensi: "Triwulanan & Sananan",
+            platform: "SIMNERA Web Portal",
+            responden: "Kompilasi Data SUSENAS, APBD BPKAD, Bea Cukai, SKLNPT",
+            cakupan: "Agregat Pengeluaran Regional",
+            tujuan: "Mengetahui bagaimana PDRB digunakan: konsumsi rumah tangga, konsumsi pemerintah, investasi fisik (PMTB), atau ekspor bersih.",
+            manfaat: "Evaluasi struktur pendorong pertumbuhan ekonomi (konsumsi vs investasi).",
+            metodologi: "Pendekatan Pengeluaran (Expenditure Approach) berbasis data riil konsumsi dan investasi.",
+            indikator: ["Konsumsi Rumah Tangga (PK-RT)", "Pembentukan Modal Tetap Bruto (PMTB)", "Net Ekspor Antar-Daerah"],
+            dokumen: "Tabel PDRB Pengeluaran, Publikasi PDRB Pengeluaran Kepulauan Sula"
+          },
+          {
+            id: "nwas-sklnpt",
+            kode: "NWAS-SKLNPT",
+            nama: "Survei Lembaga Non-Profit Rumah Tangga (SKLNPT)",
+            frekuensi: "Sananan",
+            platform: "FASIH Web & Kuesioner SKLNPT",
+            responden: "Pengurus Yayasan Keagamaan, Panti Asuhan, Ormas, Parpol",
+            cakupan: "Lembaga Nirlaba Aktif di Kepulauan Sula",
+            tujuan: "Mengestimasi nilai konsumsi, sumbangan, dan pengeluaran operasional lembaga nirlaba yang melayani masyarakat.",
+            manfaat: "Pengisian komponen PK-LNPRT dalam PDRB Pengeluaran.",
+            metodologi: "Sampling berstrata organisasi kemasyarakatan dan keagamaan terdaftar.",
+            indikator: ["Konsumsi Lembaga Nirlaba (PK-LNPRT)", "Struktur Penerimaan Donasi/Iuran"],
+            dokumen: "Daftar SKLNPT-Sananan, Pedoman Akuntansi Nirlaba"
+          }
+        ]
+      },
+
+      ipds: {
+        id: "ipds",
+        nama: "Integrasi Pengolahan & Diseminasi Statistik (IPDS)",
+        unitKerja: "Tim Kerja IPDS (Teknologi Informasi, PST, Wilkerstat & Diseminasi)",
+        tagStyle: "background-color: var(--team-ipds-bg); color: var(--team-ipds-text); border: 1px solid var(--team-ipds-border);",
+        deskripsi: "Tim IPDS bertindak sebagai tulang punggung teknologi informasi, integrasi sistem, dan diseminasi resmi BPS. Tim ini tidak melakukan survei lapangan primer, melainkan mengelola seluruh infrastruktur server, CAPI FASIH, basis data geospasial Wilkerstat, layanan Pelayanan Statistik Terpadu (PST), website publikasi, dan koordinasi metadata Satu Data Indonesia.",
+        dasarHukum: "UU No. 16 Tahun 1997; Perpres No. 39 Tahun 2019 (Satu Data Indonesia); Perka BPS No. 4 Tahun 2019 tentang Metadata Statistik.",
+        tupoksi: [
+          "Mengelola infrastruktur jaringan, server database, keamanan informasi, dan konektivitas CAPI FASIH.",
+          "Menyelenggarakan Pelayanan Statistik Terpadu (PST): konsultasi data, perpustakaan, dan penjualan publikasi resmi.",
+          "Mengelola pemutakhiran peta spasial digital Wilayah Kerja Statistik (Wilkerstat) dan geotagging wilayah.",
+          "Mengelola portal website BPS Kabupaten, rilis Berita Resmi Statistik (BRS), dan media sosial resmi.",
+          "Melakukan pembinaan rekomendasi kegiatan statistik dan validasi metadata (ROMANIK / Satu Data Indonesia)."
+        ],
+        indikatorKunci: [
+          "Indeks Kepuasan Konsumen PST", "Persentase Ketersediaan Server CAPI FASIH", "Cakupan Peta Digital Wilkerstat 100%", "Ketepatan Waktu Rilis BRS", "Jumlah Metadata Sektoral Tervalidasi"
+        ],
+        survei: [
+          {
+            id: "ipds-fasih",
+            kode: "IPDS-FASIH-OPS",
+            nama: "Manajemen Infrastruktur & Database CAPI FASIH",
+            frekuensi: "Operasional Berkelanjutan Real-Time",
+            platform: "FASIH Enterprise Server & Mobile Device Management (MDM)",
+            responden: "Seluruh Petugas PCL, PML, dan Koseka BPS",
+            cakupan: "Seluruh Endpoint Perangkat Pencacahan di Daerah",
+            tujuan: "Menjamin kelancaran sinkronisasi data kuesioner elektronik, enkripsi transmisi, dan ketersediaan server pengolahan data.",
+            manfaat: "Data hasil pencacahan lapangan langsung terunggah aman dan dapat di-scraping ke STATIVA.",
+            metodologi: "Monitoring telemetri server, load balancing, dan audit integritas data.",
+            indikator: ["Server Uptime (99.9%)", "Kecepatan Transmisi Dokumen", "Nol Data Loss"],
+            dokumen: "SOP Pengelolaan Server FASIH, Log Audit Transmisi Data"
+          },
+          {
+            id: "ipds-pst",
+            kode: "IPDS-PST-SERVICE",
+            nama: "Pelayanan Statistik Terpadu & Konsultasi Data (PST)",
+            frekuensi: "Layanan Harian (Senin - Jumat)",
+            platform: "Portal PST Online & Front Office PST Kepulauan Sula",
+            responden: "Mahasiswa, Peneliti, OPD Pemerintah Daerah, Masyarakat Umum",
+            cakupan: "Pengguna Data Statistik Nasional & Regional",
+            tujuan: "Memberikan layanan rujukan data resmi, konsultasi rancangan survei sektoral, dan penjualan publikasi statistik.",
+            manfaat: "Kemudahan akses data Satu Data Indonesia bagi publik.",
+            metodologi: "Standar Pelayanan Publik PermenPAN-RB No. 15 Tahun 2014.",
+            indikator: ["Indeks Kepuasan Konsumen (IKK PST)", "Jumlah Permohonan Data Terlayani", "Waktu Respon Layanan"],
+            dokumen: "Standar Pelayanan PST, Buku Register Permohonan Data"
+          },
+          {
+            id: "ipds-wilkerstat",
+            kode: "IPDS-WILKERSTAT",
+            nama: "Pengelolaan Peta Spasial & Master Wilayah Kerja Statistik",
+            frekuensi: "Pemutakhiran Sananan & Menjelang Sensus",
+            platform: "Aplikasi Spasial Wilkerstat Mobile & QGIS Desktop",
+            responden: "Aparatur Desa / Ketua RT / Kepala Dusun",
+            cakupan: "100% Blok Sensus dan Batas Desa di Kab. Kepulauan Sula",
+            tujuan: "Memetakan batas wilayah kerja statistik, muatan bangunan fisik/sensus, dan titik koordinat geografis.",
+            manfaat: "Kerangka induk penarikan sampel untuk seluruh survei rumah tangga dan ekonomi.",
+            metodologi: "Ground-checking berbasis GPS dan delineasi citra satelit resolusi tinggi.",
+            indikator: ["Peta Blok Sensus Digital 100% Valid", "Titik Geotagging Fasilitas Publik"],
+            dokumen: "Peta Digital Format Shapefile (SHP), Master Wilkerstat BPS"
+          },
+          {
+            id: "ipds-romantik",
+            kode: "IPDS-ROMANTIK-SDI",
+            nama: "Manajemen Rekomendasi & Metadata Statistik Sektoral (ROMANIK)",
+            frekuensi: "Berkelanjutan",
+            platform: "Portal ROMANIK Satu Data Indonesia",
+            responden: "Organisasi Perangkat Daerah (Dinas/Badan Pemda Kepulauan Sula)",
+            cakupan: "Seluruh Survei Sektoral yang Digelar Pemda",
+            tujuan: "Memeriksa rancangan survei dinas daerah untuk mencegah duplikasi kegiatan dan memastikan kepatuhan kaidah statistik.",
+            manfaat: "Penerbitan Surat Rekomendasi Statistik Sektoral resmi BPS.",
+            metodologi: "Telaah kelayakan metodologi, variabel, dan format metadata MS-Keg.",
+            indikator: ["Jumlah Rekomendasi Statistik Diterbitkan", "Tingkat Kepatuhan Standar Data"],
+            dokumen: "Formulir Pemberitahuan Survei, Lembar Rekomendasi BPS"
+          },
+          {
+            id: "ipds-diseminasi",
+            kode: "IPDS-DISEMINASI-BRS",
+            nama: "Diseminasi Publikasi & Portal Web BPS Kabupaten",
+            frekuensi: "Bulanan / Sananan",
+            platform: "Portal Web CMS Resmi (kepulauansulakab.bps.go.id)",
+            responden: "Publikasi Eksternal & Media Massa",
+            cakupan: "Rilis Publikasi Resmi Daerah",
+            tujuan: "Menerbitkan publikasi unggulan 'Kabupaten Kepulauan Sula Dalam Angka' dan rilis rutin BRS.",
+            manfaat: "Penyebarluasan informasi capaian indikator makro daerah secara transparan.",
+            metodologi: "Desktop publishing standar BPS RI dan diseminasi digital.",
+            indikator: ["Ketepatan Waktu Rilis ARC (Advance Release Calendar)", "Jumlah Unduhan Publikasi"],
+            dokumen: "Buku Kepulauan Sula Dalam Angka, Naskah Berita Resmi Statistik"
+          }
+        ]
+      }
+    };
+
+    let currentActiveTeamKey = "sosial";
+    let currentActiveSurveyObj = null;
+
+    // ─── ROUTER LOGIC ───
+    function navigateToPage(pageName, teamKey = null, scrollToSectionId = null) {
+      const pageHome = document.getElementById("pageHome");
+      const pageTeamHub = document.getElementById("pageTeamHub");
+      const pageTeamDetail = document.getElementById("pageTeamDetail");
+      const pageSurveyDetail = document.getElementById("pageSurveyDetail");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      // Close mobile hamburger
+      const navMenu = document.getElementById("navMenu");
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      if (navMenu.classList.contains("open")) {
+        navMenu.classList.remove("open");
+        hamburgerBtn.setAttribute("aria-expanded", "false");
+        hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+
+      pageHome.classList.remove("active-page");
+      pageTeamHub.classList.remove("active-page");
+      pageTeamDetail.classList.remove("active-page");
+      pageSurveyDetail.classList.remove("active-page");
+
+      if (pageName === "team-hub") {
+        pageTeamHub.classList.add("active-page");
+        navLinks.forEach(l => l.classList.remove("active"));
+        navLinks[1].classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (pageName === "team-detail") {
+        pageTeamDetail.classList.add("active-page");
+        navLinks.forEach(l => l.classList.remove("active"));
+        navLinks[1].classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (pageName === "survey-detail") {
+        pageSurveyDetail.classList.add("active-page");
+        navLinks.forEach(l => l.classList.remove("active"));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        pageHome.classList.add("active-page");
+        navLinks.forEach(l => l.classList.remove("active"));
+        navLinks[0].classList.add("active");
+
+        if (scrollToSectionId) {
+          setTimeout(() => {
+            const el = document.getElementById(scrollToSectionId);
+            if (el) {
+              const topOffset = el.offsetTop - 80;
+              window.scrollTo({ top: topOffset, behavior: "smooth" });
+            }
+          }, 50);
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+    }
+
+    // ─── OPEN SINGLE TEAM DETAIL WEBPAGE (LEVEL 3) ───
+    function openTeamDetailPage(teamKey, searchQuery = "") {
+      const team = MASTER_TEAMS[teamKey];
+      if (!team) return;
+
+      currentActiveTeamKey = teamKey;
+
+      // Populate Header
+      document.getElementById("singleTeamBreadcrumbTitle").innerText = `Tim ${team.nama}`;
+      document.getElementById("singleTeamPageTitle").innerText = `Tim ${team.nama}`;
+      document.getElementById("singleTeamPageSubtitle").innerText = team.unitKerja;
+
+      const filteredSurveys = team.survei.filter(s => 
+        s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.kode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.tujuan.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      const html = `
+        <!-- Bagian 1: Definisi & Profil Mendalam Tim -->
+        <div class="team-profile-container">
+          <span class="team-badge-tag" style="${team.tagStyle}">
+            <i class="fa-solid fa-layer-group"></i> TIM TEKNIS RESMI BPS
+          </span>
+          <h2 class="team-profile-title">Tim ${team.nama}</h2>
+          <p class="team-profile-mandate"><i class="fa-solid fa-building-columns"></i> ${team.unitKerja}</p>
+          <p style="font-size: 0.95rem; color: var(--color-text-primary); line-height: 1.65; margin-top: 0.75rem;">
+            ${team.deskripsi}
+          </p>
+
+          <div class="team-details-grid">
+            <div>
+              <h3 class="detail-box-title">
+                <i class="fa-solid fa-list-check" style="color: var(--color-muted-indigo);"></i> Tugas Pokok & Fungsi Kerja (Tupoksi Rinci)
+              </h3>
+              <ul class="tupoksi-list">
+                ${team.tupoksi.map(t => `<li>${t}</li>`).join('')}
+              </ul>
+
+              <div style="margin-top: 1.25rem;">
+                <h3 class="detail-box-title" style="font-size: 0.75rem;">
+                  <i class="fa-solid fa-scale-balanced" style="color: var(--color-muted-indigo);"></i> Dasar Hukum & Legalitas:
+                </h3>
+                <p style="font-size: 0.8125rem; color: var(--color-text-muted); line-height: 1.5;">
+                  ${team.dasarHukum}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <div style="background: white; border: 1px solid var(--color-border); border-radius: 10px; padding: 1.25rem;">
+                <h3 class="detail-box-title" style="font-size: 0.8125rem; margin-bottom: 0.35rem;">
+                  <i class="fa-solid fa-chart-pie" style="color: var(--color-muted-indigo);"></i> Indikator & Output Kunci yang Dihasilkan
+                </h3>
+                <div class="indicator-chips">
+                  ${team.indikatorKunci.map(ind => `<span class="indicator-chip">${ind}</span>`).join('')}
+                </div>
+              </div>
+
+              <div style="margin-top: 1rem; padding: 1rem; background-color: white; border: 1px solid var(--color-border); border-radius: 10px;">
+                <span style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 700; text-transform: uppercase;">
+                  Total Kegiatan/Layanan:
+                </span>
+                <p style="font-size: 1.5rem; font-weight: 800; color: var(--color-muted-indigo); font-family: var(--font-display);">
+                  ${team.survei.length} Kegiatan Terdaftar
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagian 2: List Ringkas & Sekilas Seluruh Survei / Layanan -->
+        <div class="surveys-ledger-container">
+          <div class="ledger-header-bar">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-primary);">
+                Daftar Kegiatan & Layanan (${filteredSurveys.length} Terdaftar)
+              </h3>
+              <p style="font-size: 0.75rem; color: var(--color-text-muted);">
+                Klik salah satu kegiatan untuk membuka halaman deskripsi lengkap & opsi scraping FASIH
+              </p>
+            </div>
+            <div>
+              <input type="text" id="ledgerSearchInput" value="${searchQuery}" placeholder="Cari kegiatan..." class="ledger-search-input">
+            </div>
+          </div>
+
+          <div>
+            ${filteredSurveys.length > 0 ? filteredSurveys.map(s => `
+              <div class="survey-list-row" onclick="openSurveyDetailPage('${teamKey}', '${s.id}')">
+                <div class="survey-row-main">
+                  <div>
+                    <span class="survey-row-code">${s.kode}</span>
+                    <h4 class="survey-row-title">${s.nama}</h4>
+                  </div>
+                  <p class="survey-row-desc">${s.tujuan}</p>
+                </div>
+
+                <div class="survey-row-meta">
+                  <span><i class="fa-regular fa-clock"></i> ${s.frekuensi}</span>
+                  <span class="survey-row-action">
+                    Buka Detail <i class="fa-solid fa-arrow-right"></i>
+                  </span>
+                </div>
+              </div>
+            `).join('') : `
+              <div style="text-align: center; padding: 3rem; color: var(--color-text-muted); font-size: 0.875rem;">
+                Tidak ada kegiatan yang sesuai dengan "${searchQuery}".
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+
+      document.getElementById("singleTeamDynamicContent").innerHTML = html;
+
+      const searchInput = document.getElementById("ledgerSearchInput");
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+        searchInput.addEventListener("input", (e) => {
+          openTeamDetailPage(teamKey, e.target.value);
+        });
+      }
+
+      navigateToPage("team-detail");
+    }
+
+    // ─── OPEN SURVEY DETAIL WEBPAGE (LEVEL 4) ───
+    function openSurveyDetailPage(teamKey, surveyId) {
+      const team = MASTER_TEAMS[teamKey];
+      if (!team) return;
+      const survey = team.survei.find(s => s.id === surveyId);
+      if (!survey) return;
+
+      currentActiveTeamKey = teamKey;
+      currentActiveSurveyObj = survey;
+
+      // Populate Breadcrumbs
+      document.getElementById("surveyBreadcrumbs").innerHTML = `
+        <a onclick="navigateToPage('home')"><i class="fa-solid fa-house"></i> Beranda</a>
+        <span>/</span>
+        <a onclick="navigateToPage('team-hub')">Portal Tim BPS</a>
+        <span>/</span>
+        <a onclick="openTeamDetailPage('${teamKey}')">Tim ${team.nama}</a>
+        <span>/</span>
+        <span style="font-family: var(--font-mono);">${survey.kode}</span>
+      `;
+
+      // Populate Header
+      document.getElementById("surveyHeaderBadges").innerHTML = `
+        <span class="survey-row-code">${survey.kode}</span>
+        <span style="font-size: 0.75rem; background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--color-text-muted); font-weight: 600;">
+          <i class="fa-regular fa-clock"></i> ${survey.frekuensi}
+        </span>
+        <span style="font-size: 0.75rem; background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--color-muted-indigo); font-weight: 600;">
+          Platform: ${survey.platform}
+        </span>
+      `;
+      document.getElementById("surveyHeaderTitle").innerText = survey.nama;
+      document.getElementById("surveyHeaderSubtitle").innerText = `Dikelola oleh Tim ${team.nama} — BPS Kabupaten Kepulauan Sula`;
+
+      // Populate Section 1: Latar Belakang & Tujuan
+      document.getElementById("surveyDetailTujuan").innerText = survey.tujuan;
+      document.getElementById("surveyDetailManfaat").innerText = survey.manfaat || "Menjadi rujukan resmi data statistik daerah dalam penyusunan kebijakan pembangunan berkelanjutan.";
+
+      // Populate Section 2: Metodologi
+      document.getElementById("surveyDetailMetodologi").innerHTML = `
+        <table style="width: 100%; font-size: 0.875rem; border-collapse: collapse;">
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: 0.6rem 0; width: 35%; color: var(--color-text-muted); font-weight: 600;">Target Responden</td>
+            <td style="padding: 0.6rem 0; color: var(--color-text-primary); font-weight: 600;">${survey.responden}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: 0.6rem 0; color: var(--color-text-muted); font-weight: 600;">Cakupan Wilayah</td>
+            <td style="padding: 0.6rem 0; color: var(--color-text-primary);">${survey.cakupan}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: 0.6rem 0; color: var(--color-text-muted); font-weight: 600;">Metode Sampling</td>
+            <td style="padding: 0.6rem 0; color: var(--color-text-primary);">${survey.metodologi}</td>
+          </tr>
+          <tr>
+            <td style="padding: 0.6rem 0; color: var(--color-text-muted); font-weight: 600;">Platform Pengumpulan</td>
+            <td style="padding: 0.6rem 0; color: var(--color-muted-indigo); font-weight: 600;">${survey.platform}</td>
+          </tr>
+        </table>
+      `;
+
+      // Populate Section 3: Indikator
+      document.getElementById("surveyDetailIndikator").innerHTML = `
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          ${survey.indikator.map(ind => `
+            <span style="font-size: 0.8125rem; font-weight: 600; background: var(--color-surface-subtle); border: 1px solid var(--color-border); padding: 0.4rem 0.8rem; border-radius: 6px; color: var(--color-text-primary);">
+              <i class="fa-solid fa-circle-check" style="color: #16A34A; margin-right: 0.35rem;"></i> ${ind}
+            </span>
+          `).join('')}
+        </div>
+      `;
+
+      // Populate Section 4: Dokumen
+      document.getElementById("surveyDetailDokumen").innerHTML = `
+        <div style="background-color: var(--color-surface-subtle); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.25rem;">
+          <p style="font-size: 0.875rem; color: var(--color-text-secondary);"><i class="fa-solid fa-file-lines" style="color: var(--color-muted-indigo); margin-right: 0.4rem;"></i> Dokumen Baku: <strong>${survey.dokumen}</strong></p>
+          <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.75rem; background: white; border: 1px solid var(--color-border); padding: 0.25rem 0.6rem; border-radius: 4px; color: var(--color-text-muted);"><i class="fa-solid fa-file-pdf"></i> Kuesioner Resmi PDF</span>
+            <span style="font-size: 0.75rem; background: white; border: 1px solid var(--color-border); padding: 0.25rem 0.6rem; border-radius: 4px; color: var(--color-text-muted);"><i class="fa-solid fa-book"></i> Pedoman Petugas (Buku 1/2)</span>
+            <span style="font-size: 0.75rem; background: white; border: 1px solid var(--color-border); padding: 0.25rem 0.6rem; border-radius: 4px; color: var(--color-text-muted);"><i class="fa-solid fa-stamp"></i> SK Penetapan Petugas</span>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("sidebarFasihSurveyId").innerHTML = `Survey ID: <code>FASIH-2026-${survey.kode}</code>`;
+
+      navigateToPage("survey-detail");
+    }
+
+    function backToTeamDetailPage() {
+      openTeamDetailPage(currentActiveTeamKey);
+    }
+
+    // ─── MODAL SCRAPING LOGIC ───
+    function openScrapingModal() {
+      const modal = document.getElementById("scrapingModal");
+      const logs = document.getElementById("terminalLogOutput");
+      modal.style.display = "flex";
+
+      const surveyName = currentActiveSurveyObj ? currentActiveSurveyObj.nama : "Survei Statistik";
+      const surveyKode = currentActiveSurveyObj ? currentActiveSurveyObj.kode : "SURVEI-2026";
+
+      logs.innerHTML = `
+        <div>[00:00:01] <span style="color: #38BDF8;">[INIT]</span> Menghubungkan ke FASIH Backend Server (https://fasih.bps.go.id)...</div>
+        <div>[00:00:02] <span style="color: #4ADE80;">[AUTH]</span> Token Bearer Session BPS Kepulauan Sula terverifikasi.</div>
+        <div>[00:00:03] <span style="color: #FBBF24;">[SCRAPE]</span> Mengeksekusi modul adapter untuk: <strong>${surveyKode} - ${surveyName}</strong>...</div>
+        <div>[00:00:04] <span style="color: #A78BFA;">[EXTRACT]</span> Mengambil data sampel & dokumen terunggah CAPI dari 167 desa...</div>
+        <div>[00:00:05] <span style="color: #4ADE80;">[SYNC]</span> 100% Data progres berhasil disinkronkan ke database PostgreSQL STATIVA!</div>
+        <div style="margin-top: 0.5rem; color: #4ADE80; font-weight: bold;">[SUCCESS] Status Realisasi & Monitoring Berhasil Diperbarui.</div>
+      `;
+    }
+
+    function closeScrapingModal() {
+      document.getElementById("scrapingModal").style.display = "none";
+    }
+
+    // ─── INITIALIZATION ON LOAD ───
+    document.addEventListener("DOMContentLoaded", () => {
+      // Navbar scroll effect
+      const navbar = document.getElementById("navbar");
+      const backToTopBtn = document.getElementById("backToTopBtn");
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 40) navbar.classList.add("scrolled");
+        else navbar.classList.remove("scrolled");
+
+        if (window.scrollY > 400) backToTopBtn.classList.add("visible");
+        else backToTopBtn.classList.remove("visible");
+      });
+
+      backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // Mobile Hamburger
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const navMenu = document.getElementById("navMenu");
+
+      hamburgerBtn.addEventListener("click", () => {
+        const isOpen = navMenu.classList.toggle("open");
+        hamburgerBtn.setAttribute("aria-expanded", isOpen);
+        hamburgerBtn.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+      });
+
+      // Animated Number Counter
+      const statNumbers = document.querySelectorAll(".stat-number");
+      let countersStarted = false;
+
+      const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !countersStarted) {
+            countersStarted = true;
+            statNumbers.forEach(stat => {
+              const target = parseInt(stat.getAttribute("data-target"), 10);
+              const suffix = stat.getAttribute("data-suffix") || "";
+              const duration = 1600;
+              const steps = 60;
+              const increment = target / steps;
+              let current = 0;
+
+              const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                  stat.textContent = target + suffix;
+                  clearInterval(timer);
+                } else {
+                  stat.textContent = Math.floor(current) + suffix;
+                }
+              }, duration / steps);
+            });
+          }
+        });
+      }, { threshold: 0.5 });
+
+      const statsSection = document.querySelector(".stats-bar");
+      if (statsSection) statsObserver.observe(statsSection);
+
+      // FAQ Accordion
+      document.querySelectorAll(".faq-item").forEach(item => {
+        const btn = item.querySelector(".faq-question-btn");
+        const answer = item.querySelector(".faq-answer");
+
+        btn.addEventListener("click", () => {
+          const isActive = item.classList.contains("active");
+          document.querySelectorAll(".faq-item").forEach(other => {
+            if (other !== item) {
+              other.classList.remove("active");
+              other.querySelector(".faq-answer").style.maxHeight = null;
+            }
+          });
+
+          if (!isActive) {
+            item.classList.add("active");
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          } else {
+            item.classList.remove("active");
+            answer.style.maxHeight = null;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
